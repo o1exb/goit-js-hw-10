@@ -25,6 +25,8 @@ function updateTimer() {
     hoursElement.textContent = '00';
     minElement.textContent = '00';
     secElement.textContent = '00';
+    calendarFace.disabled = false;
+    startBtn.disabled = true;
     return;
   }
 
@@ -37,14 +39,8 @@ function updateTimer() {
 }
 
 function startTimer() {
-  if (!userSelectedTime) return;
-
-  const currentTime = Date.now();
-  if (userSelectedTime <= currentTime) {
-    iziToast.error({ message: 'Please choose a date in the future' });
-    return;
-  }
-
+  startBtn.disabled = true;
+  calendarFace.disabled = true;
   updateTimer();
   intervalId = setInterval(updateTimer, 1000);
 }
@@ -72,7 +68,14 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     userSelectedTime = selectedDates[0].getTime();
-    console.log(selectedDates[0]);
+    const currentTime = Date.now();
+    if (userSelectedTime <= currentTime) {
+      iziToast.error({ message: 'Please choose a date in the future' });
+      startBtn.disabled = true;
+      return;
+    }
+
+    startBtn.disabled = false;
   },
 };
 
